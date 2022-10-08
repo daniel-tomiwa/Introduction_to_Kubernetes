@@ -1,0 +1,71 @@
+---
+apiVersion: kubeflow.org/v1beta1
+kind: Experiment
+metadata:
+  namespace: kubeflow-user-example-com
+  name: tfjob-flower-experiment
+spec:
+  parallelTrialCount: 2
+  maxTrialCount: 12
+  maxFailedTrialCount: 3
+  objective:
+    type: maximize
+    goal: 0.99
+    objectiveMetricName: accuracy
+  algorithm:
+    algorithmName: random
+  parameters:
+    - name: learning_rate
+      parameterType: double
+      feasibleSpace:
+        min: "0.001"
+        max: "0.05"
+    - name: optimizer
+      parameterType: categorical
+      feasibleSpace:
+        list:
+          - sgd
+          - adam
+  trialTemplate:
+    primaryContainerName: TFJob-container
+    # In this example we can collect metrics only from the Worker pods.
+    # primaryPodLabels:
+    #   training.kubeflow.org/replica-type: worker
+    trialParameters:
+      - name: learningRate
+        description: Learning rate for the training model
+        reference: learning_rate
+      - name: Optimizer
+        description: Optimization Algorithm
+        reference: optimizer
+    trialSpec:
+      apiVersion: kubeflow.org/v1
+      kind: TFJob
+      spec:
+        tfReplicaSpecs:
+          Worker:
+            replicas: 2
+            restartPolicy: Never
+            template:
+              metadata:
+                annotations:
+                  sidecar.istio.io/inject: "false"
+              spec:
+                containers:
+                  - name: flowers-tfjob
+                    image: danietomiwa/katib-tfjob
+                    command:
+                      - python
+                      - multi_worker_flowers.py
+                      - --saved_model_dir="/train/saved_model/"
+                      - --url="https://github.com/Pelumi-Aderinto/hello-world/raw/master/data.npy"
+                      - --checkpoint_dir="/train/checkpoint"
+                      - --lr=${trialParameters.learningRate}
+                      - --optimizer=${trialParameters.Optimizer}
+                    volumeMounts:
+                      - mountPath: /train
+                        name: training
+                volumes:
+                  - name: training
+                    persistentVolumeClaim:
+                      claimName: flowers-volume

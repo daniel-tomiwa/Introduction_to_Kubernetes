@@ -1,0 +1,57 @@
+apiVersion: kubeflow.org/v1
+kind: TFJob
+metadata:
+  name: flowers-multi-worker
+  namespace: default
+spec:
+  runPolicy:
+    cleanPodPolicy: None
+  tfReplicaSpecs:
+    PS:
+      replicas: 1
+      restartPolicy: Never
+      template:
+        metadata:
+          annotations:
+            sidecar.istio.io/inject: "false"
+        spec:
+          containers:
+            - name: flowers-tfjob
+              image: danietomiwa/flower-tfjob
+              command:
+                - python
+                - multi_worker_flowers.py
+                - --saved_model_dir="/train/saved_model/"
+                - --url="https://github.com/Pelumi-Aderinto/hello-world/raw/master/data.npy"
+                - --checkpoint_dir="/train/checkpoint"
+              volumeMounts:
+                - mountPath: /train
+                  name: training
+          volumes:
+            - name: training
+              persistentVolumeClaim:
+                claimName: flowers-volume     
+    Worker:
+      replicas: 2
+      restartPolicy: Never
+      template:
+        metadata:
+          annotations:
+            sidecar.istio.io/inject: "false"
+        spec:
+          containers:
+            - name: flowers-tfjob
+              image: danietomiwa/flower-tfjob
+              command:
+                - python
+                - multi_worker_flowers.py
+                - --saved_model_dir="/train/saved_model/"
+                - --url="https://github.com/Pelumi-Aderinto/hello-world/raw/master/data.npy"
+                - --checkpoint_dir="/train/checkpoint"
+              volumeMounts:
+                - mountPath: /train
+                  name: training
+          volumes:
+            - name: training
+              persistentVolumeClaim:
+                claimName: flowers-volume
