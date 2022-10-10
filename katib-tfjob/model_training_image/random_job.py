@@ -90,22 +90,22 @@ def main(args):
 
     # MultiWorkerMirroredStrategy creates copies of all variables in the model's
     # layers on each device across all workers
-    # if your GPUs don't support NCCL, replace "communication" with another
-    communication_options = tf.distribute.experimental.CommunicationOptions(
-        implementation = tf.distribute.experimental.CommunicationImplementation.RING
-    )
-    strategy = tf.distribute.MultiWorkerMirroredStrategy(
-        communication_options = communication_options
-    )
+    # communication_options = tf.distribute.experimental.CommunicationOptions(
+    #     implementation = tf.distribute.experimental.CommunicationImplementation.RING
+    # )
+    # strategy = tf.distribute.MultiWorkerMirroredStrategy(
+    #     communication_options = communication_options
+    # )
 
-    BATCH_SIZE_PER_REPLICA = 32
-    BATCH_SIZE = BATCH_SIZE_PER_REPLICA * strategy.num_replicas_in_sync
+    # BATCH_SIZE_PER_REPLICA = 32
+    # BATCH_SIZE = BATCH_SIZE_PER_REPLICA * strategy.num_replicas_in_sync
+    BATCH_SIZE = 64
 
     generate_training_data(args)
 
-    with strategy.scope():
-        # Model building/compiling need to be within `strategy.scope()`.
-        multi_worker_model = build_and_compile_cnn_model(args)
+    # with strategy.scope():
+    #     # Model building/compiling need to be within `strategy.scope()`.
+    multi_worker_model = build_and_compile_cnn_model(args)
 
     data_path = '/train/preprocessed_data'
 
@@ -115,16 +115,16 @@ def main(args):
     y_test = np.load(f"{data_path}/y_test.npy", allow_pickle=True)
 
     # Define the checkpoint directory to store the checkpoints
-    checkpoint_dir = args.checkpoint_dir
+    # checkpoint_dir = args.checkpoint_dir
 
     # Name of the checkpoint files
-    checkpoint_prefix = os.path.join(checkpoint_dir, "ckpt_{epoch}")
+    # checkpoint_prefix = os.path.join(checkpoint_dir, "ckpt_{epoch}")
 
-    callbacks = [
-      tf.keras.callbacks.TensorBoard(log_dir='./logs'),
-      tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_prefix,
-                                         save_weights_only=True),
-    ]
+    # callbacks = [
+    #   tf.keras.callbacks.TensorBoard(log_dir='./logs'),
+    #   tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_prefix,
+    #                                      save_weights_only=True),
+    # ]
     # Keras' `model.fit()` trains the model with specified number of epochs and
     # number of steps per epoch. Note that the numbers here are for demonstration
     # purposes only and may not sufficiently produce a model with good quality.
@@ -134,8 +134,7 @@ def main(args):
         y_train, 
         batch_size = BATCH_SIZE, 
         epochs = 3,
-        validation_data = (x_test, y_test),
-        callbacks = callbacks
+        validation_data = (x_test, y_test)
     )
 
     # Saving a model
@@ -178,12 +177,12 @@ if __name__ == '__main__':
         help='Url where the data is hosted'
     )
 
-    parser.add_argument(
-        '--checkpoint_dir',
-        type=str,
-        required=True,
-        help='Tensorflow checkpoint directory.'
-    )
+    # parser.add_argument(
+    #     '--checkpoint_dir',
+    #     type=str,
+    #     required=True,
+    #     help='Tensorflow checkpoint directory.'
+    # )
 
     parser.add_argument(
         '--lr',
