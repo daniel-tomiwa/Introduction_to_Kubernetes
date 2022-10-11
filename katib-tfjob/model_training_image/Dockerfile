@@ -8,6 +8,6 @@ WORKDIR /app
 
 COPY ./requirements.txt /app
 
-COPY ./multi_worker_flowers.py /app
+COPY ./random_job.py /app
 
 RUN pip install -r requirements.txt

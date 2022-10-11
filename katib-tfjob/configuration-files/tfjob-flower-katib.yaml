@@ -55,13 +55,13 @@ spec:
                   - name: flowers-tfjob
                     image: danietomiwa/katib-tfjob
                     command:
-                      - python
-                      - multi_worker_flowers.py
-                      - --saved_model_dir="/train/saved_model/"
-                      - --url="https://github.com/Pelumi-Aderinto/hello-world/raw/master/data.npy"
-                      - --checkpoint_dir="/train/checkpoint"
-                      - --lr=${trialParameters.learningRate}
-                      - --optimizer=${trialParameters.Optimizer}
+                      - "python3"
+                      - "multi_worker_flowers.py"
+                      - "--saved_model_dir="/train/saved_model/"
+                      - "--url='https://github.com/Pelumi-Aderinto/hello-world/raw/master/data.npy'"
+                      - "--checkpoint_dir="/train/checkpoint"
+                      - "--lr=${trialParameters.learningRate}"
+                      - "--optimizer=${trialParameters.Optimizer}"
                     volumeMounts:
                       - mountPath: /train
                         name: training
