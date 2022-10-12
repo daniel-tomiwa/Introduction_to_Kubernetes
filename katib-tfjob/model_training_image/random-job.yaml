@@ -3,6 +3,8 @@ kind: Experiment
 metadata:
   namespace: kubeflow
   name: random
+  labels:
+    katib-metricscollector-injection: enabled
 spec:
   objective:
     type: maximize
@@ -27,7 +29,6 @@ spec:
         list:
           - sgd
           - adam
-          - ftrl
   trialTemplate:
     primaryContainerName: training-container
     trialParameters:
@@ -35,7 +36,7 @@ spec:
         description: Learning rate for the training model
         reference: lr
       - name: optimizer
-        description: Training model optimizer (sdg, adam or ftrl)
+        description: Training model optimizer (sdg, adam)
         reference: optimizer
     trialSpec:
       apiVersion: batch/v1
@@ -45,12 +46,13 @@ spec:
           spec:
             containers:
               - name: training-container
-                image: pelvic/katib-job
+                image: pelvic/katib-job:latest
+                imagePullPolicy: Never
                 command:
                   - "python3"
                   - "random_job.py"
-                  - "--saved_model_dir="/train/saved_model/"
-                  - "--url="https://github.com/Pelumi-Aderinto/hello-world/raw/master/data.npy"
+                  - "--saved_model_dir='/train/saved_model/'"
+                  - "--url='https://github.com/Pelumi-Aderinto/hello-world/raw/master/data.npy'"
                   - "--lr=${trialParameters.learningRate}"
-                  - "--optimizer=${trialParameters.Optimizer}"
+                  - "--optimizer=${trialParameters.optimizer}"
             restartPolicy: Never

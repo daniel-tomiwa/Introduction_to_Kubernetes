@@ -53,13 +53,14 @@ spec:
               spec:
                 containers:
                   - name: flowers-tfjob
-                    image: danietomiwa/katib-tfjob
+                    image: danietomiwa/katib-tfjob:latest
+                    imagePullPolicy: Never
                     command:
                       - "python3"
                       - "multi_worker_flowers.py"
-                      - "--saved_model_dir="/train/saved_model/"
+                      - "--saved_model_dir='/train/saved_model/'"
                       - "--url='https://github.com/Pelumi-Aderinto/hello-world/raw/master/data.npy'"
-                      - "--checkpoint_dir="/train/checkpoint"
+                      - "--checkpoint_dir='/train/checkpoint'"
                       - "--lr=${trialParameters.learningRate}"
                       - "--optimizer=${trialParameters.Optimizer}"
                     volumeMounts:
