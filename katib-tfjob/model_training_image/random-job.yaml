@@ -47,7 +47,6 @@ spec:
             containers:
               - name: training-container
                 image: pelvic/katib-job:latest
-                imagePullPolicy: Never
                 command:
                   - "python3"
                   - "random_job.py"
