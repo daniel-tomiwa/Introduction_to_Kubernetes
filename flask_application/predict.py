@@ -20,7 +20,12 @@ app = Flask("duration-prediction")
 
 @app.route("/")
 def home():
-    html = f"<h2> Welcome to the home page for duratio prediction </h2>"
+    username = os.environ.get('DB_USERNAME', "postgres")
+    password = os.environ.get('DB_PASSWORD', "password")
+    html = f"""<h1 align='centre'> Welcome to the home page for taxi ride duration prediction </h1>
+               <h3> The username: {username} </h3> 
+               <h3> The password: {password} </h3>
+            """
     return html.format(format)
 
 @app.route("/predict", methods=['POST'])
