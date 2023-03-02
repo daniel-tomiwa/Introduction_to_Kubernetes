@@ -15,9 +15,34 @@ This branch in this repository contains a basic implementation of a machine lear
 
 ## Commands
 
-> To install minikube
+> To install minikube (For a linux machine) Note that other machine types can follow the documentation in the link above
 1. Download the minikube binary file
 ```bash
 curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+```
+2. Install the downloaded binary file
+```bash
 sudo install minikube-linux-amd64 /usr/local/bin/minikube
 ```
+3. Make sure you start minikube with the appropriate [driver](https://minikube.sigs.k8s.io/docs/drivers/)
+```bash
+minikube start --driver=docker
+minikube config set driver docker
+```
+
+> To install kubectl
+1. Download the kubectl binary file
+```bash
+curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
+```
+2. Make the kubectl binary file executable
+```bash
+chmod +x ./kubectl
+```
+3. Move trhe binary file to your path
+```bash
+sudo mv ./kubectl /usr/local/bin/kubectl
+```
+
+## Working on the Kubernetes Cluster
+
