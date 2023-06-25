@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: our-config
+  namespace: default
+data:
+  DB_PASSWORD: kuberntes_is_fun
+  DB_USERNAME: ride-prediction-app
