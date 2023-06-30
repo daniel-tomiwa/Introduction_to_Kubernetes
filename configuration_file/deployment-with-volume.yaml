@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment # What kind of object you want to create [deployment, service etc]
+metadata: # Data that helps uniquely identify the object, including a name string, UID, and optional namespace
+  name: duration-app
+  labels:
+    app: duration
+    version: v2
+spec:
+  selector: # Define what selectors the Deployment uses to find the PODS that are related to it
+    matchLabels: # matchLabels is a map of {key,value} pairs.
+      app: duration
+      version: v2
+  template:
+    metadata:
+      labels:
+        app: duration
+        version: v2
+    spec:
+      containers:
+      - name: duration-container
+        image: danietomiwa/ride-prediction:v2
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+        volumeMounts:
+        - mountPath: /mnt
+          name: models-volume
+        readinessProbe:
+          periodSeconds: 5
+          exec:
+            command:
+            - ls
+            - -l
+            - /mnt/lin_reg.bin
+          initialDelaySeconds: 6
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port: 8000
+          initialDelaySeconds: 15
+          periodSeconds: 20
+      volumes:
+      - name: models-volume
+        persistentVolumeClaim:
+          claimName: model-vol-claim
+      restartPolicy: Always

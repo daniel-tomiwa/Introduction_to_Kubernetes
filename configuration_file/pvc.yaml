@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: model-vol-claim
+spec:
+  storageClassName: ride-pred-volume
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Mi

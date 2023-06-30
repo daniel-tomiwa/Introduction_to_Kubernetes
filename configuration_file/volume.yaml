@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: models-pv-volume
+spec:
+  storageClassName: ride-pred-volume
+  capacity:
+    storage: 200Mi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    path: "/opt/sfw"
+    server: ip-172-31-26-128
+    readOnly: true
