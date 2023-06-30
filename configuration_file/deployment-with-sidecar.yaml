@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment # What kind of object you want to create [deployment, service etc]
+metadata: # Data that helps uniquely identify the object, including a name string, UID, and optional namespace
+  name: duration-app
+  labels:
+    app: duration
+    version: v1
+spec:
+  selector: # Define what selectors the Deployment uses to find the PODS that are related to it
+    matchLabels: # matchLabels is a map of {key,value} pairs.
+      app: duration
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: duration
+        version: v1
+    spec:
+      containers:
+      - name: duration-container
+        image: danietomiwa/ride-prediction:v1
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8000
+        readinessProbe:
+            tcpSocket:
+              port: 8000
+            initialDelaySeconds: 6
+            periodSeconds: 10
+        volumeMounts:                     #<--Same depth as image:  
+        - name: sidecar-volume              # Must match volume name above
+          mountPath: /mnt
+      - name: fdlogger
+        image: fluent/fluentd
+        imagePullPolicy: IfNotPresent
+        volumeMounts:                     #<--Same depth as image:  
+        - name: sidecar-volume              # Must match volume name above
+          mountPath: /etc
+      volumes:
+      - name: sidecar-volume
+        emptyDir: {}
+      restartPolicy: Always
