@@ -19,7 +19,7 @@ spec:
       containers:
       - name: duration-container
         image: danietomiwa/ride-prediction:v1
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8000
         readinessProbe:

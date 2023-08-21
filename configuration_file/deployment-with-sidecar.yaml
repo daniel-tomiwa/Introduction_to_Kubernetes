@@ -34,7 +34,7 @@ spec:
         image: fluent/fluentd
         imagePullPolicy: IfNotPresent
         volumeMounts:                     #<--Same depth as image:  
-        - name: sidecar-volume              # Must match volume name above
+        - name: sidecar-volume              # Must match volume name below
           mountPath: /etc
       volumes:
       - name: sidecar-volume

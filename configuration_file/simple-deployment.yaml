@@ -6,6 +6,7 @@ metadata: # Data that helps uniquely identify the object, including a name strin
     app: duration
     version: v1
 spec:
+  replicas: 3
   selector: # Define what selectors the Deployment uses to find the PODS that are related to it
     matchLabels: # matchLabels is a map of {key,value} pairs.
       app: duration
