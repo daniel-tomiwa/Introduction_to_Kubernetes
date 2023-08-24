@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  # labels:
+  #   app: try1
+  name: review-6-deployment
+  namespace: default
+spec:
+  # replicas: 1
+  selector:
+    matchLabels:
+      app: review-6
+  template:
+    metadata:
+      labels:
+        app: review-6
+    spec:
+      containers:
+      - name: webserver
+        image: nginx
+        ports:
+        - containerPort: 80
+        readinessProbe:
+          tcpSocket:
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port: 80
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        resources: {}

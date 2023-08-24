@@ -32,6 +32,7 @@ spec:
             port: 80
           initialDelaySeconds: 15
           periodSeconds: 20
+        resources: {}
         # Set the DB_USERNAME and DB_PASSWORD environment variable
         env:
         - name: DB_USERNAME
